@@ -1,10 +1,8 @@
 const express = require("express");
-const mongoose = require("mongoose");
-const passport = require("passport");
-const jwtStrategy = require("./config/passport");
-const authRoutes = require("./routes/auth");
-
 require("dotenv").config();
+const mongoose = require("mongoose");
+
+const authRoutes = require("./routes/auth");
 
 // Set up the MongoDB connection
 mongoose.connect(process.env.MONGODB_URI, {
@@ -17,9 +15,8 @@ mongoose.connection.on("connected", () => console.log("Connected to MongoDB"));
 const app = express();
 
 // Middleware
+
 app.use(express.json());
-app.use(passport.initialize());
-passport.use(jwtStrategy);
 
 // Routes
 app.use("/auth", authRoutes);

@@ -1,24 +1,38 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const passport = require("passport");
+
 const User = require("../models/User");
+const passport = require("passport");
+
+//Import and use authentication strategy from config file
+jwtStrategy = require("../config/passport");
+passport.use(jwtStrategy);
 
 const router = express.Router();
 
+//Function for generating a JWT
+const generateJWT = (username) => {
+  return jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: "14d" });
+};
+
 // Register a new user
 router.post("/register", (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
-  User.findOne({ email }).then((user) => {
+  User.findOne({ username }).then((user) => {
     if (user) {
       return res.status(400).json({ message: "Email already exists" });
     }
 
-    const newUser = new User({ email, password });
+    const newUser = new User({ username, password });
     newUser
       .save()
       .then((user) =>
-        res.json({ message: "User registered successfully", user })
+        res.json({
+          message: "User registered successfully",
+          user,
+          token: generateJWT(username),
+        })
       )
       .catch((err) =>
         res.status(500).json({ message: "Error registering user", err })
@@ -28,35 +42,19 @@ router.post("/register", (req, res) => {
 
 // Authenticate a user and return a JWT token
 router.post("/login", (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
-  User.findOne({ email }).then((user) => {
+  User.findOne({ username }).then((user) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (!user.comparePassword(password)) {
-      return res.status(400).json({ message: "Invalid password" });
+    if (user.comparePassword(password)) {
+      // If password matches return jwt
+      res.json(generateJWT(user.email));
+    } else {
+      return res.status(400).json({ message: "Invalid Credentials" });
     }
-
-    const payload = {
-      id: user.id,
-      email: user.email,
-    };
-
-    jwt.sign(
-      payload,
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" },
-      (err, token) => {
-        if (err) {
-          return res
-            .status(500)
-            .json({ message: "Error generating token", err });
-        }
-        res.json({ token: "Bearer " + token });
-      }
-    );
   });
 });
 
@@ -65,7 +63,7 @@ router.get(
   "/profile",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    res.json({ id: req.user.id, email: req.user.email });
+    res.json({ id: req.user.id, username: req.user.username });
   }
 );
 
