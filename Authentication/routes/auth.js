@@ -11,17 +11,19 @@ passport.use(jwtStrategy);
 const router = express.Router();
 
 //Function for generating a JWT
-const generateJWT = (username) => {
-  return jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: "14d" });
+const generateJWT = (username, id) => {
+  return jwt.sign({ username, id }, process.env.JWT_SECRET, {
+    expiresIn: "14d",
+  });
 };
 
 // Register a new user
 router.post("/register", (req, res) => {
   const { username, password } = req.body;
-
+  console.log(req.body);
   User.findOne({ username }).then((user) => {
     if (user) {
-      return res.status(400).json({ message: "Email already exists" });
+      return res.status(400).json({ message: "Username already exists" });
     }
 
     const newUser = new User({ username, password });
@@ -31,7 +33,7 @@ router.post("/register", (req, res) => {
         res.json({
           message: "User registered successfully",
           user,
-          token: generateJWT(username),
+          token: generateJWT(username, user.id),
         })
       )
       .catch((err) =>
@@ -51,7 +53,7 @@ router.post("/login", (req, res) => {
 
     if (user.comparePassword(password)) {
       // If password matches return jwt
-      res.json(generateJWT(user.email));
+      res.json(generateJWT(username, user.id));
     } else {
       return res.status(400).json({ message: "Invalid Credentials" });
     }

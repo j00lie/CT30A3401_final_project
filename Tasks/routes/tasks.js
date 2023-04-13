@@ -2,6 +2,10 @@ const express = require("express");
 const passport = require("passport");
 const Task = require("../models/Task");
 
+//Import and use authentication strategy from config file
+jwtStrategy = require("../config/passport");
+passport.use(jwtStrategy);
+
 const router = express.Router();
 
 // Get all tasks for the authenticated user
@@ -23,7 +27,6 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     const { title, description } = req.body;
-
     const newTask = new Task({ userId: req.user.id, title, description });
     newTask
       .save()
