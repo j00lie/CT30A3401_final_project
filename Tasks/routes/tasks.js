@@ -26,8 +26,13 @@ router.post(
   "/",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    const { title, description } = req.body;
-    const newTask = new Task({ userId: req.user.id, title, description });
+    const { title, description, deadline } = req.body;
+    const newTask = new Task({
+      userId: req.user.id,
+      title,
+      description,
+      deadline,
+    });
     newTask
       .save()
       .then((task) => res.json(task))

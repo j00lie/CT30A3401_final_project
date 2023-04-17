@@ -13,6 +13,9 @@ const TaskSchema = new mongoose.Schema({
   description: {
     type: String,
   },
+  deadline: {
+    type: Date,
+  },
   completed: {
     type: Boolean,
     default: false,
