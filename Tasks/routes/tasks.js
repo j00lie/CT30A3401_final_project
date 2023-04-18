@@ -47,11 +47,11 @@ router.put(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    const { title, description, completed } = req.body;
+    const { title, description, deadline, completed } = req.body;
 
     Task.findOneAndUpdate(
       { _id: req.params.id, userId: req.user.id },
-      { $set: { title, description, completed } },
+      { $set: { title, description, deadline, completed } },
       { new: true }
     )
       .then((task) => {

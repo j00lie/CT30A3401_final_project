@@ -12,7 +12,6 @@ router.get(
   "/",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    console.log(req.user);
     Notification.find({ userId: req.user.id })
       .then((notifications) => res.json(notifications))
       .catch((err) =>
