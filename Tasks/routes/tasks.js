@@ -42,7 +42,7 @@ router.post(
   }
 );
 
-// Update a task for the authenticated user
+// Update a task for the authenticated user, use task id as request parameter
 router.put(
   "/:id",
   passport.authenticate("jwt", { session: false }),
@@ -66,7 +66,7 @@ router.put(
   }
 );
 
-// Delete a task for the authenticated user
+// Delete a task for the authenticated user, use task id as request parameter
 router.delete(
   "/:id",
   passport.authenticate("jwt", { session: false }),

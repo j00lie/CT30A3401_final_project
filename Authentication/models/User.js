@@ -1,3 +1,5 @@
+//DB user schema. Password hashing and checking encapsulated here.
+
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 

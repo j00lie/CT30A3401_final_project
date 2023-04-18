@@ -1,6 +1,5 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-
 const User = require("../models/User");
 const passport = require("passport");
 
@@ -20,7 +19,7 @@ const generateJWT = (username, id) => {
 // Register a new user
 router.post("/register", (req, res) => {
   const { username, password } = req.body;
-  console.log(req.body);
+
   User.findOne({ username }).then((user) => {
     if (user) {
       return res.status(400).json({ message: "Username already exists" });

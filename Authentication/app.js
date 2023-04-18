@@ -2,6 +2,7 @@ const express = require("express");
 require("dotenv").config();
 const mongoose = require("mongoose");
 
+//Get routes
 const authRoutes = require("./routes/auth");
 
 // Set up the MongoDB connection
@@ -15,7 +16,6 @@ mongoose.connection.on("connected", () => console.log("Connected to MongoDB"));
 const app = express();
 
 // Middleware
-
 app.use(express.json());
 
 // Routes

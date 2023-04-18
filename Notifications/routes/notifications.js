@@ -43,7 +43,7 @@ router.post(
   }
 );
 
-// Update the read status of a notification
+// Update the read status of a notification, use notification id as request parameter
 router.put(
   "/:id",
   passport.authenticate("jwt", { session: false }),

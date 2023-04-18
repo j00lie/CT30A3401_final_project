@@ -1,3 +1,5 @@
+//DB schema for singular task
+
 const mongoose = require("mongoose");
 
 const TaskSchema = new mongoose.Schema({
